@@ -15,6 +15,13 @@
       "when": 1733523570231,
       "tag": "0001_smart_randall_flagg",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733784831127,
+      "tag": "0002_grey_iron_fist",
+      "breakpoints": true
     }
   ]
 }

@@ -7,7 +7,7 @@ export type Task = {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-  userId: number | null;
+  userId?: string | null;
   title: string;
   completed: boolean;
 };

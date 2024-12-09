@@ -11,6 +11,7 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
   rules: {
+    "@typescript-eslint/only-throw-error": "warn",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/no-unsafe-call": "warn",
     "@typescript-eslint/consistent-type-definitions": "off",

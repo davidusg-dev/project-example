@@ -51,4 +51,18 @@ export const projectRouter = createTRPCRouter({
         .where(eq(projects.id, input.id));
       return result[0];
     }),
+
+  updateProject: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        imageUrl: z.string().url(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return db
+        .update(projects)
+        .set({ imageUrl: input.imageUrl })
+        .where(eq(projects.id, input.id));
+    }),
 });

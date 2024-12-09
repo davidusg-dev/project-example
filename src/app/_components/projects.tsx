@@ -1,14 +1,16 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { Card } from "~/components/ui/card";
 
-type Project = {
+export type Project = {
   id: number;
   name: string;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string | null;
 };
 
 const ProjectsList = () => {
@@ -35,12 +37,16 @@ const ProjectsList = () => {
           onClick={() => router.push(`/projects/${project.id}`)}
           className="cursor-pointer p-6 transition-colors hover:bg-slate-50"
         >
-          <h2 className="text-xl font-semibold text-slate-900">
-            {project.name}
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Creado el {new Date(project.createdAt).toLocaleDateString()}
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-slate-900">
+                {project.name}
+              </h2>
+              <p className="mt-2 text-sm text-slate-500">
+                Creado el {new Date(project.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
         </Card>
       ))}
     </div>
