@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 
-type Task = {
+export type Task = {
   projectId: number;
   id: number;
   createdAt: Date;

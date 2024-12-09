@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import TasksList from "./tasks";
+import { useRouter } from "next/navigation";
+import { Card } from "~/components/ui/card";
 
 type Project = {
   id: number;
@@ -11,41 +12,39 @@ type Project = {
 };
 
 const ProjectsList = () => {
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
-    null,
-  );
   const { data, isLoading, error } = api.project.listProjects.useQuery();
+
   useEffect(() => {
     if (data) {
       setProjects(data);
     }
   }, [data]);
-  if (isLoading) return <div>Cargando proyectos...</div>;
-  if (error) return <div>Error al cargar proyectos</div>;
+
+  if (isLoading)
+    return <div className="text-slate-500">Cargando proyectos...</div>;
+  if (error)
+    return <div className="text-red-500">Error al cargar proyectos</div>;
 
   return (
-    <div>
-      <h1>Proyectos</h1>
-      <div className="grid gap-4">
-        {projects.map((project) => (
-          <div
-            key={project.id}
-            onClick={() =>
-              setSelectedProjectId(
-                project.id === selectedProjectId ? null : project.id,
-              )
-            }
-            className="cursor-pointer rounded p-4 hover:bg-purple-400"
-          >
-            <h2>{project.name}</h2>
-            {selectedProjectId === project.id && (
-              <TasksList projectId={project.id} />
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {projects.map((project) => (
+        <Card
+          key={project.id}
+          onClick={() => router.push(`/projects/${project.id}`)}
+          className="cursor-pointer p-6 transition-colors hover:bg-slate-50"
+        >
+          <h2 className="text-xl font-semibold text-slate-900">
+            {project.name}
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Creado el {new Date(project.createdAt).toLocaleDateString()}
+          </p>
+        </Card>
+      ))}
     </div>
   );
 };
+
 export default ProjectsList;

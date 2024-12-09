@@ -7,7 +7,9 @@ const sql = neon(env.DATABASE_URL);
 const db = drizzle(sql, { schema });
 
 // Function to generate plausible tasks based on project
-function generateTasksForProject(projectName: string): { title: string; completed: boolean }[] {
+function generateTasksForProject(
+  projectName: string,
+): { title: string; completed: boolean }[] {
   const baseTasks = [
     "Planificación inicial del proyecto",
     "Análisis de requerimientos",
@@ -18,12 +20,12 @@ function generateTasksForProject(projectName: string): { title: string; complete
     "Testing de integración",
     "Documentación técnica",
     "Despliegue en staging",
-    "Lanzamiento a producción"
+    "Lanzamiento a producción",
   ];
 
   return baseTasks.map((taskTitle) => ({
-    title: `${taskTitle} - ${projectName}`,
-    completed: Math.random() > 0.7 // ~30% completed randomly
+    title: `${taskTitle}`,
+    completed: Math.random() > 0.7, // ~30% completed randomly
   }));
 }
 
@@ -44,16 +46,19 @@ const main = async () => {
       "Sistema de Facturación",
       "App de Gestión de Tareas",
       "Portal de Noticias",
-      "Sistema de Reservas"
+      "Sistema de Reservas",
     ];
 
     console.log("Insertando proyectos y tareas...");
 
     // Insert projects
-    const insertedProjects = await db.insert(schema.projects)
-      .values(projectNames.map(name => ({
-        name
-      })))
+    const insertedProjects = await db
+      .insert(schema.projects)
+      .values(
+        projectNames.map((name) => ({
+          name,
+        })),
+      )
       .returning();
 
     console.log(`Se insertaron ${insertedProjects.length} proyectos.`);
@@ -63,12 +68,15 @@ const main = async () => {
     // For each project, create 10 tasks
     for (const project of insertedProjects) {
       const projectTasks = generateTasksForProject(project.name);
-      const inserted = await db.insert(schema.tasks)
-        .values(projectTasks.map(task => ({
-          projectId: project.id,
-          title: task.title,
-          completed: task.completed
-        })))
+      const inserted = await db
+        .insert(schema.tasks)
+        .values(
+          projectTasks.map((task) => ({
+            projectId: project.id,
+            title: task.title,
+            completed: task.completed,
+          })),
+        )
         .returning();
 
       totalTasksInserted += inserted.length;
@@ -76,7 +84,6 @@ const main = async () => {
 
     console.log(`Se insertaron ${totalTasksInserted} tareas en total.`);
     console.log("Seed completado con éxito.");
-
   } catch (error) {
     console.error("Error durante el seed:", error);
     process.exit(1);
@@ -90,4 +97,4 @@ main()
   })
   .finally(() => {
     process.exit(0);
-  }); 
+  });
