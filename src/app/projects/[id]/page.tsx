@@ -4,15 +4,14 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-export default async function ProjectTasks({
-  params,
-}: {
-  params: Promise<{ id: string }> | { id: string };
-}) {
-  const resolvedParams = await params;
+type Params = Promise<{ id: string }>;
+
+export default async function ProjectTasks(props: { params: Params }) {
+  const params = await props.params;
+  const id = params.id;
 
   const project = await api.project.getProject({
-    id: parseInt(resolvedParams.id),
+    id: parseInt(id),
   });
 
   if (!project) return <div>Proyecto no encontrado</div>;
