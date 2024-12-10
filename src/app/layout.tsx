@@ -1,7 +1,6 @@
 import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "./_components/navbar";
 import { extractRouterConfig } from "uploadthing/server";
@@ -20,11 +19,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="es" className={GeistSans.variable}>
         <body className="min-h-screen bg-slate-50 font-sans antialiased">
-          <TRPCReactProvider>
-            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            <Navbar />
-            {children}
-          </TRPCReactProvider>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          <Navbar />
+          {children}
         </body>
       </html>
     </ClerkProvider>

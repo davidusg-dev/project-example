@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "~/trpc/react";
 import TasksTable from "./tasks-table";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
@@ -8,8 +7,9 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { type Project } from "./projects";
+import { updateProject } from "~/server/actions";
 
 export function ProjectContent({
   initialProject,
@@ -19,12 +19,6 @@ export function ProjectContent({
   const router = useRouter();
   const [project, setProject] = useState<Project>(initialProject);
   const [imageKey, setImageKey] = useState(0);
-
-  const { mutate: updateProject } = api.project.updateProject.useMutation({
-    onSuccess: () => {
-      router.refresh();
-    },
-  });
 
   return (
     <main className="container mx-auto py-8">
@@ -52,12 +46,15 @@ export function ProjectContent({
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
                 <UploadButton
                   endpoint="imageUploader"
-                  onClientUploadComplete={(res) => {
+                  onClientUploadComplete={async (res) => {
                     if (res?.[0]) {
-                      updateProject({
-                        id: project.id,
+                      await updateProject(project.id, res[0].url);
+                      setProject({
+                        ...project,
                         imageUrl: res[0].url,
                       });
+                      setImageKey((prev) => prev + 1);
+                      router.refresh();
                     }
                   }}
                   className="ut-button:h-8 ut-button:w-8 ut-button:p-0"
@@ -68,17 +65,16 @@ export function ProjectContent({
             <div className="flex h-full w-full items-center justify-center bg-slate-100">
               <UploadButton
                 endpoint="imageUploader"
-                onClientUploadComplete={(res) => {
-                  console.log("res", res);
-                  if (res && res[0]) {
+                onClientUploadComplete={async (res) => {
+                  if (res?.[0]) {
+                    await updateProject(project.id, res[0].url);
                     setProject({
                       ...project,
                       imageUrl: res[0].url,
                     });
-
                     setImageKey((prev) => prev + 1);
+                    router.refresh();
                   }
-                  router.refresh();
                 }}
                 className="ut-button:h-8 ut-button:w-8 ut-button:p-0"
               />

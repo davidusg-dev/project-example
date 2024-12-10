@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { Card } from "~/components/ui/card";
 import Image from "next/image";
+import { listProjects } from "~/server/actions";
 
 export type Project = {
   id: number;
@@ -17,13 +17,24 @@ export type Project = {
 const ProjectsList = () => {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const { data, isLoading, error } = api.project.listProjects.useQuery();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (data) {
-      setProjects(data);
-    }
-  }, [data]);
+    const loadProjects = async () => {
+      try {
+        setIsLoading(true);
+        const data = await listProjects();
+        setProjects(data);
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error("Failed to load projects"));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadProjects();
+  }, []);
 
   if (isLoading)
     return <div className="text-slate-500">Cargando proyectos...</div>;

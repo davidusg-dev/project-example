@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "~/trpc/react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -17,17 +17,24 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { assignTask, getAssignableUsers, listTasks } from "~/server/actions";
+import { type Task } from "./tasks";
 
 export default function TasksTable({ projectId }: { projectId: number }) {
-  const utils = api.useUtils();
-  const { data: tasks } = api.project.listTasks.useQuery({ projectId });
-  const { data: users } = api.project.getAssignableUsers.useQuery();
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [users, setUsers] = useState<Array<{ id: string; name: string }>>([]);
 
-  const assignTask = api.project.assignTask.useMutation({
-    onSuccess: async () => {
-      await utils.project.listTasks.invalidate({ projectId });
-    },
-  });
+  useEffect(() => {
+    const loadData = async () => {
+      const [tasksData, usersData] = await Promise.all([
+        listTasks(projectId),
+        getAssignableUsers(),
+      ]);
+      setTasks(tasksData);
+      setUsers(usersData);
+    };
+    void loadData();
+  }, [projectId]);
 
   return (
     <Table>
@@ -45,11 +52,11 @@ export default function TasksTable({ projectId }: { projectId: number }) {
             <TableCell>
               <Select
                 value={task.userId ?? ""}
-                onValueChange={(userId: string) => {
-                  assignTask.mutate({
-                    taskId: task.id,
-                    userId,
-                  });
+                onValueChange={async (userId: string) => {
+                  await assignTask(task.id, userId);
+                  setTasks(
+                    tasks.map((t) => (t.id === task.id ? { ...t, userId } : t)),
+                  );
                 }}
               >
                 <SelectTrigger className="w-[200px]">
