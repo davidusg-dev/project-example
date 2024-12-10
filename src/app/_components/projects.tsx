@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { Card } from "~/components/ui/card";
+import Image from "next/image";
 
 export type Project = {
   id: number;
@@ -42,6 +43,15 @@ const ProjectsList = () => {
               <h2 className="text-xl font-semibold text-slate-900">
                 {project.name}
               </h2>
+              {project.imageUrl && (
+                <Image
+                  src={project.imageUrl}
+                  alt={project.name}
+                  width={96}
+                  height={96}
+                  className="object-cover"
+                />
+              )}
               <p className="mt-2 text-sm text-slate-500">
                 Creado el {new Date(project.createdAt).toLocaleDateString()}
               </p>

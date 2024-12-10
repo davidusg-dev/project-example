@@ -3,6 +3,8 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { db } from "~/server/db";
 import { projects, tasks } from "~/server/db/schema";
+import { auth, createClerkClient } from "@clerk/nextjs/server";
+import { env } from "~/env";
 
 export const projectRouter = createTRPCRouter({
   createProject: publicProcedure
@@ -39,7 +41,8 @@ export const projectRouter = createTRPCRouter({
       return db
         .select()
         .from(tasks)
-        .where(eq(tasks.projectId, input.projectId));
+        .where(eq(tasks.projectId, input.projectId))
+        .orderBy(tasks.id);
     }),
 
   getProject: publicProcedure
@@ -65,4 +68,32 @@ export const projectRouter = createTRPCRouter({
         .set({ imageUrl: input.imageUrl })
         .where(eq(projects.id, input.id));
     }),
+
+  assignTask: publicProcedure
+    .input(
+      z.object({
+        taskId: z.number(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const user = await auth();
+      if (!user) throw new Error("Unauthorized");
+
+      return db
+        .update(tasks)
+        .set({ userId: input.userId })
+        .where(eq(tasks.id, input.taskId));
+    }),
+  getAssignableUsers: publicProcedure.query(async () => {
+    const clerk = createClerkClient({ secretKey: env.CLERK_SECRET_KEY });
+    const users = await clerk.users.getUserList();
+
+    return users.data.map(user => ({
+      id: user.id,
+      username: user.username,
+      name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
+      imageUrl: user.imageUrl ?? '',
+    }));
+  }),
 });

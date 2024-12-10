@@ -4,6 +4,9 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "./_components/navbar";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 
 export const metadata: Metadata = {
   title: "Gestor de Proyectos",
@@ -18,6 +21,7 @@ export default function RootLayout({
       <html lang="es" className={GeistSans.variable}>
         <body className="min-h-screen bg-slate-50 font-sans antialiased">
           <TRPCReactProvider>
+            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <Navbar />
             {children}
           </TRPCReactProvider>

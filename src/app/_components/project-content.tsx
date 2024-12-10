@@ -9,14 +9,7 @@ import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-type Project = {
-  id: number;
-  name: string;
-  imageUrl?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { type Project } from "./projects";
 
 export function ProjectContent({
   initialProject,
@@ -25,6 +18,7 @@ export function ProjectContent({
 }) {
   const router = useRouter();
   const [project, setProject] = useState<Project>(initialProject);
+  const [imageKey, setImageKey] = useState(0);
 
   const { mutate: updateProject } = api.project.updateProject.useMutation({
     onSuccess: () => {
@@ -48,6 +42,7 @@ export function ProjectContent({
           {project.imageUrl ? (
             <>
               <Image
+                key={imageKey}
                 src={project.imageUrl}
                 alt={project.name}
                 width={96}
@@ -74,12 +69,16 @@ export function ProjectContent({
               <UploadButton
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
-                  if (res?.[0]) {
-                    updateProject({
-                      id: project.id,
+                  console.log("res", res);
+                  if (res && res[0]) {
+                    setProject({
+                      ...project,
                       imageUrl: res[0].url,
                     });
+
+                    setImageKey((prev) => prev + 1);
                   }
+                  router.refresh();
                 }}
                 className="ut-button:h-8 ut-button:w-8 ut-button:p-0"
               />
