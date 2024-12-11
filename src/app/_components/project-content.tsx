@@ -9,7 +9,6 @@ import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { type Project } from "~/types";
-import { updateProject } from "~/server/actions";
 
 export function ProjectContent({
   initialProject,
@@ -46,9 +45,8 @@ export function ProjectContent({
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
                 <UploadButton
                   endpoint="imageUploader"
-                  onClientUploadComplete={async (res) => {
+                  onClientUploadComplete={(res) => {
                     if (res?.[0]) {
-                      await updateProject(project.id, res[0].url);
                       setProject({
                         ...project,
                         imageUrl: res[0].url,
@@ -57,6 +55,7 @@ export function ProjectContent({
                       router.refresh();
                     }
                   }}
+                  input={{ projectId: project.id }}
                   className="ut-button:h-8 ut-button:w-8 ut-button:p-0"
                 />
               </div>
@@ -65,9 +64,8 @@ export function ProjectContent({
             <div className="flex h-full w-full items-center justify-center bg-slate-100">
               <UploadButton
                 endpoint="imageUploader"
-                onClientUploadComplete={async (res) => {
+                onClientUploadComplete={(res) => {
                   if (res?.[0]) {
-                    await updateProject(project.id, res[0].url);
                     setProject({
                       ...project,
                       imageUrl: res[0].url,
@@ -76,6 +74,7 @@ export function ProjectContent({
                     router.refresh();
                   }
                 }}
+                input={{ projectId: project.id }}
                 className="ut-button:h-8 ut-button:w-8 ut-button:p-0"
               />
             </div>

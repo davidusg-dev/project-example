@@ -6,6 +6,7 @@ import { Navbar } from "./_components/navbar";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Gestor de Proyectos",
@@ -22,6 +23,7 @@ export default function RootLayout({
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Navbar />
           {children}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
