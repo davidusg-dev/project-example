@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card } from "~/components/ui/card";
 import Image from "next/image";
 import { listProjects } from "~/server/actions";
-
-export type Project = {
-  id: number;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  imageUrl?: string | null;
-};
+import { type Project } from "~/types";
 
 const ProjectsList = () => {
   const router = useRouter();

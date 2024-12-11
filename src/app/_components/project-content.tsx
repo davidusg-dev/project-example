@@ -8,7 +8,7 @@ import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { type Project } from "./projects";
+import { type Project } from "~/types";
 import { updateProject } from "~/server/actions";
 
 export function ProjectContent({

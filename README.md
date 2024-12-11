@@ -19,8 +19,8 @@ Sistema de gestión de proyectos y tareas.
 ## Todo
 
 - [x] Agregar autenticación (Clerk)
-- [ ] Utilizar uploadthing para subir archivos
-- [ ] Utilizar Next/Image para mostrar imágenes
+- [x] Utilizar uploadthing para subir archivos
+- [x] Utilizar Next/Image para mostrar imágenes
+- [x] Integrar Server Actions
 - [ ] Agregar manejo de errores (Sentry)
-- [ ] Integrar Server Actions
 - [ ] Analiticas (PostHog)

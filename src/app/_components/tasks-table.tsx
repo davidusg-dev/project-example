@@ -18,23 +18,36 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { assignTask, getAssignableUsers, listTasks } from "~/server/actions";
-import { type Task } from "./tasks";
+import { type User, type Task } from "~/types";
 
 export default function TasksTable({ projectId }: { projectId: number }) {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [users, setUsers] = useState<Array<{ id: string; name: string }>>([]);
+  const [users, setUsers] = useState<Array<User>>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const [tasksData, usersData] = await Promise.all([
-        listTasks(projectId),
-        getAssignableUsers(),
-      ]);
-      setTasks(tasksData);
-      setUsers(usersData);
+      try {
+        setIsLoading(true);
+        const [tasksData, usersData] = await Promise.all([
+          listTasks(projectId),
+          getAssignableUsers(),
+        ]);
+        setTasks(tasksData);
+        setUsers(usersData);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+
     void loadData();
   }, [projectId]);
+
+  if (isLoading) {
+    return <div>Loading tasks...</div>;
+  }
 
   return (
     <Table>
