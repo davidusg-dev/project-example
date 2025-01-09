@@ -36,3 +36,11 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  userId: varchar("user_id", { length: 255 }),
+  username: text("username").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

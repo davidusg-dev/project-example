@@ -22,6 +22,27 @@
       "when": 1733784831127,
       "tag": "0002_grey_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1736382318734,
+      "tag": "0003_careless_puff_adder",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1736382592451,
+      "tag": "0004_plain_nightmare",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1736384591616,
+      "tag": "0005_sloppy_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }

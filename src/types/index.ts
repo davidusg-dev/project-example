@@ -19,6 +19,14 @@ export type Task = {
 export type User = {
   id: string;
   name: string;
-  username: string | null;
+  username: string;
   imageUrl: string;
+};
+
+export type Message = {
+  id: number;
+  content: string;
+  userId: string;
+  username: string;
+  createdAt: Date;
 };

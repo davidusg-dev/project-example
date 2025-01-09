@@ -1,9 +1,9 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { migrate } from "drizzle-orm/neon-http/migrator";
-import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/migrator";
 import { env } from "~/env";
+import postgres from "postgres";
 
-const sql = neon(env.DATABASE_URL);
+const sql = postgres(env.DATABASE_URL, { ssl: true });
 
 const db = drizzle(sql);
 

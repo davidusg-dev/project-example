@@ -3,6 +3,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import ChatBubble from "./_components/chat-bubble";
 
 export default function Home() {
   return (
@@ -35,6 +36,7 @@ export default function Home() {
           </h1>
           <div className="w-full">
             <ProjectsList />
+            <ChatBubble />
           </div>
         </main>
       </SignedIn>

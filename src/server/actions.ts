@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "~/server/db";
-import { projects, tasks } from "~/server/db/schema";
+import { projects, tasks, messages } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 import { createClerkClient } from "@clerk/nextjs/server";
 import { env } from "~/env";
@@ -54,4 +54,21 @@ export async function getAssignableUsers() {
     name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
     imageUrl: user.imageUrl ?? "",
   }));
+}
+
+export async function sendMessage(
+  content: string,
+  userId: string,
+  username: string,
+) {
+  await db.insert(messages).values({ content, userId, username });
+}
+
+export async function getMessages() {
+  const data = await db.query.messages.findMany({
+    orderBy: (messages, { desc }) => [desc(messages.createdAt)],
+    limit: 50,
+  });
+
+  return data.reverse();
 }
